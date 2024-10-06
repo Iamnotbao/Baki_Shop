@@ -1,0 +1,54 @@
+
+
+body {
+    font-family: 'Roboto';
+    // background-image: url('../images/background_Login.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    background-size: cover;
+    
+   
+}
+
+.login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: solid 2px blue;
+    width: 450px;
+    line-height: 30px;
+    padding: 10px 30px 60px 30px;
+    background: linear-gradient(160deg, rgba(63,94,251,1) 0%, rgba(70,252,95,0.2) 100%);
+    border-radius: 10px;
+    margin-top: 150px;
+   
+    input{
+        margin-top: 10px;
+        border: solid 1px black;
+        padding: 10px;
+        border-radius: 10px;
+        width: 400px;
+        background: linear-gradient(278deg, rgba(2,0,36,1) 0%, rgba(129,163,163,1) 11%, rgba(92,169,185,1) 40%, rgba(0,255,240,1) 100%);
+        
+    }
+}
+
+.btn-group {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    button{
+        margin-bottom: 10px;
+        border-radius: 10px;
+        padding: 3px 10px;
+        background: linear-gradient(0deg, rgba(34,193,195,1) 0%, rgba(253,187,45,1) 100%);
+    }
+    button:hover{
+        background: transparent;
+    }
+}

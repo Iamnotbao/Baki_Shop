@@ -79,30 +79,39 @@ const Order = () => {
         }));
     }
     const handlePayByMomo = async (data) => {
+        console.log("send",data);
+        
         const url = "http://localhost:3000/api/payment";
         const response = await axios.post(url, data);
-        const payUrl = response.data.payUrl;
+        if (response.data) {
+            const payUrl = response.data.payUrl;
+            const orderId = response.data.orderId;
+            const updateFullData = {
+                ...data,
+                paymentInfo:{
+                    id:orderId,
+                    status:"pending"
+                }
+            }
+            window.location.href=`${payUrl}`
+        }
+        
         
     }
     const handlePurchase = () => {
         const method = document.getElementById("payment-method");
         const payment = method.value;
-        setData(prev => ({
-            ...prev,
-            paymentInfo: {
-                id: "pi_1GqIC8l6Wq90MUaG9zt7M2e5",
-                status: "pending",
-            },
+        const updateData = {
+            ...data,
             orderItems: listProduct,
-            total:totalPrice +0.1*totalPrice+20,
-           
-        }))
+            total: Math.round(totalPrice + 0.1 * totalPrice + 20),
+        }
         switch (payment) {
             case "ATM":
                 console.log("ok");
                 break;
             case "Momo":
-                handlePayByMomo(data);
+                handlePayByMomo(updateData);
                 break;
             default:
                 break;

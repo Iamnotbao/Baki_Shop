@@ -170,7 +170,7 @@ async function momoPayment(req, res) {
     var secretKey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz';
     var orderInfo = 'pay with MoMo';
     var partnerCode = 'MOMO';
-    var redirectUrl = 'http://127.0.0.1:5173/';
+    var redirectUrl = 'https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b';
     var ipnUrl = 'https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b';
     var requestType = "payWithMethod";
     var amount = '50000';
@@ -181,7 +181,6 @@ async function momoPayment(req, res) {
     var orderGroupId ='';
     var autoCapture =true;
     var lang = 'vi';
-    
     //before sign HMAC SHA256 with format
     //accessKey=$accessKey&amount=$amount&extraData=$extraData&ipnUrl=$ipnUrl&orderId=$orderId&orderInfo=$orderInfo&partnerCode=$partnerCode&redirectUrl=$redirectUrl&requestId=$requestId&requestType=$requestType
     var rawSignature = "accessKey=" + accessKey + "&amount=" + amount + "&extraData=" + extraData + "&ipnUrl=" + ipnUrl + "&orderId=" + orderId + "&orderInfo=" + orderInfo + "&partnerCode=" + partnerCode + "&redirectUrl=" + redirectUrl + "&requestId=" + requestId + "&requestType=" + requestType;
@@ -227,7 +226,7 @@ async function momoPayment(req, res) {
     let result;
     try{
         result = await axios(options)
-        return res.status(200).json(result.data.payUrl);
+        return res.status(200).json(result.data);
     }
     catch(err){
         return res.status(500).json({

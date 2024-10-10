@@ -31,7 +31,7 @@ app.get('/check-cookies', (req, res) => {
     }
 });
 
-mongoose.connect('mongodb://127.0.0.1:27017/Hrnk');
+mongoose.connect('mongodb+srv://baolecit20:aOK52QZHOH5GKuL1@cluster0.f8fzz.mongodb.net/Baki_Shop?retryWrites=true&w=majority');
 
 app.listen(3000,() => console.log("Server is runninng"));
 

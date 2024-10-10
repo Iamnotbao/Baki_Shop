@@ -13,7 +13,7 @@ const Order = () => {
     const totalPrice = location.state?.totalPrice || 0;
     const [listProduct, setListProduct] = useState([]);
     const [listPay, setListPay] = useState(["ATM", "Momo"]);
-    const [flag,setFlag] = useState(false);
+    const [flag, setFlag] = useState(false);
     const [data, setData] = useState({
     })
     console.log("Test data", data);
@@ -78,7 +78,12 @@ const Order = () => {
 
         }));
     }
-
+    const handlePayByMomo = async (data) => {
+        const url = "http://localhost:3000/api/payment";
+        const response = await axios.post(url, data);
+        const payUrl = response.data.payUrl;
+        
+    }
     const handlePurchase = () => {
         const method = document.getElementById("payment-method");
         const payment = method.value;
@@ -88,25 +93,17 @@ const Order = () => {
                 id: "pi_1GqIC8l6Wq90MUaG9zt7M2e5",
                 status: "pending",
             },
-            orderItems:listProduct
+            orderItems: listProduct,
+            total:totalPrice +0.1*totalPrice+20,
+           
         }))
-        setFlag(true);
-
         switch (payment) {
             case "ATM":
                 console.log("ok");
                 break;
             case "Momo":
-                
-                    if(flag){
-                        const 
-                       url = "http://localhost:3000/api/order/payment";
-                       const response = awat
-                    }
-                    
+                handlePayByMomo(data);
                 break;
-
-
             default:
                 break;
         }
@@ -121,7 +118,7 @@ const Order = () => {
                         <tr>
                             <td>
                                 <label htmlFor="address">Address</label>
-                                <input type="text" placeholder="Enter your address" id="address" name="address"  required onChange={(event) => handleAddress(event.currentTarget.name, event.currentTarget.value)} />
+                                <input type="text" placeholder="Enter your address" id="address" name="address" required onChange={(event) => handleAddress(event.currentTarget.name, event.currentTarget.value)} />
 
                             </td>
 
@@ -139,7 +136,7 @@ const Order = () => {
                         <tr>
                             <td colSpan={3}>
                                 <label htmlFor="pincode">Pincode</label>
-                                <input type="number" placeholder="Enter your pincode" name="pincode" id="pincode"  required onChange={(event) => handleAddress(event.currentTarget.name, event.currentTarget.value)} />
+                                <input type="number" placeholder="Enter your pincode" name="pincode" id="pincode" required onChange={(event) => handleAddress(event.currentTarget.name, event.currentTarget.value)} />
                             </td>
                         </tr>
                         <tr>
@@ -189,7 +186,7 @@ const Order = () => {
                             </td>
                         </tr>
                     </table>
-                    
+
                     <button type="submit" style={{ border: "1px solid black", backgroundColor: "grey", color: "white", opacity: "0.5", borderRadius: "5px" }}>Cancel</button>
                 </form>
                 <button onClick={handlePurchase} style={{ border: "1px solid black", backgroundColor: "grey", color: "white", opacity: "0.5", borderRadius: "5px" }}>Purchase</button>

@@ -164,11 +164,13 @@ const deleteOrder = async (req, res) => {
 
 }
 async function momoPayment(req, res) {
+    console.log(req.body);
+    
     var accessKey = 'F8BBA842ECF85';
     var secretKey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz';
     var orderInfo = 'pay with MoMo';
     var partnerCode = 'MOMO';
-    var redirectUrl = 'https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b';
+    var redirectUrl = 'http://127.0.0.1:5173/';
     var ipnUrl = 'https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b';
     var requestType = "payWithMethod";
     var amount = '50000';
@@ -225,7 +227,7 @@ async function momoPayment(req, res) {
     let result;
     try{
         result = await axios(options)
-        return res.status(200).json(result.data)
+        return res.status(200).json(result.data.payUrl);
     }
     catch(err){
         return res.status(500).json({

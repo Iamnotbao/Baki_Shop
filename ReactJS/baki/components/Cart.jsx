@@ -25,7 +25,7 @@ const Cart = () => {
         navigation(`/product/${item.name}`, { state: { id: item._id } });
     }
     function handleOrder() {
-        navigation("/order");
+        navigation("/order", { state: { totalPrice: totalMoney } });
     }
 
     function handleDeleteCart (id,e){

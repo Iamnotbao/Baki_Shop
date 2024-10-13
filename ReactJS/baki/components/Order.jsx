@@ -16,6 +16,7 @@ const Order = () => {
     const [flag, setFlag] = useState(false);
     const [data, setData] = useState({
     })
+    
     console.log("Test data", data);
     console.log("list is:", listProduct)
 
@@ -55,9 +56,9 @@ const Order = () => {
     //     totalPrice: "455455"
     // }
     const token = localStorage.getItem("token");
-    const fetchData = async () => {
+    const fetchData = async (updateData) => {
         try {
-            const response = await axios.post(baseURL, data, {
+            const response = await axios.post(baseURL, updateData, {
                 headers: {
                     Authorization: `Bearer ${JSON.parse(token)}`,
                     "Content-Type": "application/json"
@@ -71,18 +72,21 @@ const Order = () => {
     }
     const handleAddress = (name, result) => {
         console.log("your address", result);
-
-        setData(prev => ({
-            ...prev,
-            [name]: result
-
-        }));
+        const updateInp = {...data,
+            shippingInfo:{
+                ...data.shippingInfo,
+                [name]: result,
+            }
+        }
+        setData(updateInp);
     }
     const handlePayByMomo = async (data) => {
         console.log("send",data);
         
         const url = "http://localhost:3000/api/payment";
         const response = await axios.post(url, data);
+        console.log(response.data);
+        
         if (response.data) {
             const payUrl = response.data.payUrl;
             const orderId = response.data.orderId;
@@ -93,18 +97,23 @@ const Order = () => {
                     status:"pending"
                 }
             }
+            fetchData(updateFullData);
             window.location.href=`${payUrl}`
         }
         
         
     }
+   
     const handlePurchase = () => {
         const method = document.getElementById("payment-method");
         const payment = method.value;
         const updateData = {
             ...data,
-            orderItems: listProduct,
-            total: Math.round(totalPrice + 0.1 * totalPrice + 20),
+            orderItems: listProduct.map(product => ({
+                product:product.productId._id,
+                quantity:product.quantity
+            })),
+            total: Math.round(totalPrice + 0.1 * totalPrice + 20)*25000,
         }
         switch (payment) {
             case "ATM":
@@ -145,7 +154,7 @@ const Order = () => {
                         <tr>
                             <td colSpan={3}>
                                 <label htmlFor="pincode">Pincode</label>
-                                <input type="number" placeholder="Enter your pincode" name="pincode" id="pincode" required onChange={(event) => handleAddress(event.currentTarget.name, event.currentTarget.value)} />
+                                <input type="number" placeholder="Enter your pincode" name="pinCode" id="pincode" required onChange={(event) => handleAddress(event.currentTarget.name, event.currentTarget.value)} />
                             </td>
                         </tr>
                         <tr>

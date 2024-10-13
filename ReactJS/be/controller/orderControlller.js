@@ -2,8 +2,10 @@ const { Buffer } = require("buffer");
 const Order = require("../model/orderModel.js");
 const Product = require("../model/productModel.js");
 const axios = require("axios")
+const crypto = require('crypto');
 
-
+let accessKey = 'F8BBA842ECF85';
+let secretKey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz';
 //create new Order
 const createOrder = async (req, res) => {
     console.log("ok");
@@ -17,8 +19,6 @@ const createOrder = async (req, res) => {
         totalPrice,
 
     } = req.body;
-
-
     try {
         const order = await Order.create({
             shippingInfo,
@@ -165,21 +165,19 @@ const deleteOrder = async (req, res) => {
 }
 async function momoPayment(req, res) {
     console.log(req.body);
-    
-    var accessKey = 'F8BBA842ECF85';
-    var secretKey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz';
+    const {total} = req.body;
     var orderInfo = 'pay with MoMo';
     var partnerCode = 'MOMO';
-    var redirectUrl = 'https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b';
-    var ipnUrl = 'https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b';
+    var redirectUrl = 'http://localhost:5173/';
+    var ipnUrl = 'https://3d14-1-52-86-108.ngrok-free.app/callback';
     var requestType = "payWithMethod";
-    var amount = '50000';
+    var amount = total;
     var orderId = partnerCode + new Date().getTime();
     var requestId = orderId;
-    var extraData ='';
+    var extraData = '';
     var paymentCode = 'T8Qii53fAXyUftPV3m9ysyRhEanUs9KlOPfHgpMR0ON50U10Bh+vZdpJU7VY4z+Z2y77fJHkoDc69scwwzLuW5MzeUKTwPo3ZMaB29imm6YulqnWfTkgzqRaion+EuD7FN9wZ4aXE1+mRt0gHsU193y+yxtRgpmY7SDMU9hCKoQtYyHsfFR5FUAOAKMdw2fzQqpToei3rnaYvZuYaxolprm9+/+WIETnPUDlxCYOiw7vPeaaYQQH0BF0TxyU3zu36ODx980rJvPAgtJzH1gUrlxcSS1HQeQ9ZaVM1eOK/jl8KJm6ijOwErHGbgf/hVymUQG65rHU2MWz9U8QUjvDWA==';
-    var orderGroupId ='';
-    var autoCapture =true;
+    var orderGroupId = '';
+    var autoCapture = true;
     var lang = 'vi';
     //before sign HMAC SHA256 with format
     //accessKey=$accessKey&amount=$amount&extraData=$extraData&ipnUrl=$ipnUrl&orderId=$orderId&orderInfo=$orderInfo&partnerCode=$partnerCode&redirectUrl=$redirectUrl&requestId=$requestId&requestType=$requestType
@@ -188,30 +186,29 @@ async function momoPayment(req, res) {
     console.log("--------------------RAW SIGNATURE----------------")
     console.log(rawSignature)
     //signature
-    const crypto = require('crypto');
     var signature = crypto.createHmac('sha256', secretKey)
         .update(rawSignature)
         .digest('hex');
     console.log("--------------------SIGNATURE----------------")
     console.log(signature)
-    
+
     //json object send to MoMo endpoint
     const requestBody = JSON.stringify({
-        partnerCode : partnerCode,
-        partnerName : "Test",
-        storeId : "MomoTestStore",
-        requestId : requestId,
-        amount : amount,
-        orderId : orderId,
-        orderInfo : orderInfo,
-        redirectUrl : redirectUrl,
-        ipnUrl : ipnUrl,
-        lang : lang,
+        partnerCode: partnerCode,
+        partnerName: "Test",
+        storeId: "MomoTestStore",
+        requestId: requestId,
+        amount: amount,
+        orderId: orderId,
+        orderInfo: orderInfo,
+        redirectUrl: redirectUrl,
+        ipnUrl: ipnUrl,
+        lang: lang,
         requestType: requestType,
         autoCapture: autoCapture,
-        extraData : extraData,
+        extraData: extraData,
         orderGroupId: orderGroupId,
-        signature : signature
+        signature: signature
     });
     //Create the HTTPS objects
     const options = {
@@ -221,22 +218,67 @@ async function momoPayment(req, res) {
             'Content-Type': 'application/json',
             'Content-Length': Buffer.byteLength(requestBody)
         },
-        data:requestBody
+        data: requestBody
     }
     let result;
-    try{
+    try {
         result = await axios(options)
         return res.status(200).json(result.data);
     }
-    catch(err){
+    catch (err) {
         return res.status(500).json({
-            message:"Cannot take momo"
+            message: "Cannot take momo"
         })
     }
 
 
 }
 
+const callBackMomo = async (req, res) => {
+    const result = req.resultCode;
+    console.log("result", result);
+}
+const checkStatus = async (req, res) => {
+    const { orderId } = req.body;
+    const requestId = orderId
+    const partnerCode = 'MOMO'
+    const rawSignature = `accessKey=${accessKey}&orderId=${orderId}&partnerCode=${partnerCode}&requestId=${requestId}`
+    var signature = crypto.createHmac('sha256', secretKey)
+        .update(rawSignature)
+        .digest('hex');
+    const requestBody = JSON.stringify({
+        partnerCode,
+        requestId: orderId,
+        orderId,
+        lang: 'vi',
+        signature
+    })
+    const options = {
+        method: "POST",
+        url: "https://test-payment.momo.vn/v2/gateway/api/query",
+        headers: {
+            'Content-Type': "application/json"
+        },
+        data: requestBody
+    }
+
+    let response;
+    try {
+        response = await axios(options);
+        console.log(response.data);
+        if (response.data) {
+            return res.status(200).json(response.data)
+        }
+        return res.status(400).json({
+            message: false
+        })
+    } catch (err) {
+        console.log(err);
+
+    }
+
+
+}
 
 module.exports = {
     createOrder,
@@ -244,5 +286,7 @@ module.exports = {
     getAllOrder,
     updateOrder,
     deleteOrder,
-    momoPayment
+    momoPayment,
+    callBackMomo,
+    checkStatus
 }

@@ -8,7 +8,7 @@ const cookieParser  = require('cookie-parser');
 
 const logger = require("morgan");
 const { createProducts, getAllProducts, updateProducts, deleteProduct, productDetails, productSearch } = require('./controller/productController.js');
-const { createOrder, getOneOrder, getAllOrder, updateOrder, deleteOrder, momoPayment } = require('./controller/orderControlller.js');
+const { createOrder, getOneOrder, getAllOrder, updateOrder, deleteOrder, momoPayment, callBackMomo, checkStatus } = require('./controller/orderControlller.js');
 const { getCart, addCart, deleteCart } = require('./controller/cartController.js');
 
 const app = express();
@@ -89,4 +89,8 @@ app.post("/api/carts",addCart);
 app.delete("/api/carts/:userId/item/:productId",deleteCart);
 
 app.post("/api/payment", momoPayment);
+
+app.post("/callback",callBackMomo)
+
+app.post("/api/check-status", checkStatus)
 

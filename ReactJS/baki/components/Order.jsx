@@ -86,7 +86,6 @@ const Order = () => {
         const url = "http://localhost:3000/api/payment";
         const response = await axios.post(url, data);
         console.log(response.data);
-        
         if (response.data) {
             const payUrl = response.data.payUrl;
             const orderId = response.data.orderId;
@@ -99,9 +98,7 @@ const Order = () => {
             }
             fetchData(updateFullData);
             window.location.href=`${payUrl}`
-        }
-        
-        
+        }       
     }
    
     const handlePurchase = () => {

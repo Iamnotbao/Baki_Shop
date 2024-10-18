@@ -5,19 +5,27 @@ import { useNavigate } from "react-router-dom";
 
 
 
-const SearchProducts = () => {
+const SearchProducts = ({locate}) => {
     const [search, setSearch] = useState(false);
+    
     const [keyword, setKeyword] = useState('');
     const [listProducts, setListProduct] = useState([]);
     const navigation = useNavigate();
     console.log("keyword", keyword);
     console.log("data is", listProducts);
+    
 
     
 
 
     const handleSearch = () => {
-        setSearch(true);
+        if(locate){
+            setSearch(true);
+        }
+        else{
+            setSearch(false);
+        }
+        
 
     }
     const handleChangeKeyword = (event) => {

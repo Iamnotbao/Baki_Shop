@@ -9,15 +9,18 @@ import { Link, useNavigate } from "react-router-dom";
 import Notification from "./Notification.jsx";
 import { useSelector } from "react-redux";
 import SearchProducts from "./SearchProduct.jsx";
-
+import { useLocation } from "react-router-dom"; 
 
 const Header = () => {
     const { items, loading, err } = useSelector((state) => state.cart);
     const navigation = useNavigate();
+    const location = useLocation();
+    const [currLocation, setCurrLocation] = useState("");
 
-    console.log(items.cart);
-    
-
+    console.log("update your address: ", currLocation);
+    useEffect(()=>{
+        setCurrLocation(location.pathname)
+    },[location.pathname])    
     return (
         <>
             <Notification />
@@ -41,7 +44,7 @@ const Header = () => {
                     </div>
                     <div className="contact">
                         <div className="contact_icon">
-                                <SearchProducts />
+                                <SearchProducts locate = {currLocation !=="/home"?true:false}/>                       
                         </div>
                         <div className="contact_icon">
                             <Profile />

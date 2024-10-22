@@ -12,20 +12,15 @@ const SearchProducts = ({locate}) => {
     const [listProducts, setListProduct] = useState([]);
     const navigation = useNavigate();
     console.log("keyword", keyword);
+    console.log("status of search", search);
+    
     console.log("data is", listProducts);
     
 
     
 
-
     const handleSearch = () => {
-        if(locate){
             setSearch(true);
-        }
-        else{
-            setSearch(false);
-        }
-        
 
     }
     const handleChangeKeyword = (event) => {

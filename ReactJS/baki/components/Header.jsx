@@ -13,14 +13,11 @@ import { useLocation } from "react-router-dom";
 
 const Header = () => {
     const { items, loading, err } = useSelector((state) => state.cart);
-    const navigation = useNavigate();
     const location = useLocation();
-    const [currLocation, setCurrLocation] = useState("");
 
-    console.log("update your address: ", currLocation);
-    useEffect(()=>{
-        setCurrLocation(location.pathname)
-    },[location.pathname])    
+
+
+
     return (
         <>
             <Notification />
@@ -43,8 +40,11 @@ const Header = () => {
                         </ul>
                     </div>
                     <div className="contact">
-                        <div className="contact_icon">
-                                <SearchProducts locate = {currLocation !=="/home"?true:false}/>                       
+                        <div className="contact_icon">{
+                            useEffect(()=>{
+                                <SearchProducts locate = {location.pathname !=="/home"?true:false}/>  
+                            },[location.pathname])}
+                                                     
                         </div>
                         <div className="contact_icon">
                             <Profile />
